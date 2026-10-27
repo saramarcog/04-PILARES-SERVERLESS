@@ -52,10 +52,17 @@ Keep-Alive: timeout=5
 - Error encontrado y cómo lo resolví: Si se envía la petición sin body o con JSON mal formateado, `JSON.parse` falla; se soluciona validando que `event.body` exista antes de parsear o envolviéndolo en un try/catch.
 
 ## Evidencias
-- Captura o transcripción breve, sin credenciales:
-  ```bash
-  curl -i -X POST http://localhost:3000/events \
-    -H "Content-Type: application/json" \
-    -d '{"name": "Concierto Apertura", "location": "Escenario Principal"}'
-  HTTP/1.1 201 Created
-  {"message":"Evento creado con éxito","event":{"name":"Concierto Apertura","location":"Escenario Principal"}}
+$ curl -i -X POST http://localhost:3000/dev/events -H 'Content-Type: application/json' -d '{"artist":"Nova Pulse","space":"Main Stage","time":"21:00","status":"CANCELLED"}'
+HTTP/1.1 201 Created
+content-type: application/json; charset=utf-8
+vary: origin
+access-control-expose-headers: WWW-Authenticate,Server-Authorization
+cache-control: no-cache
+content-length: 95
+Date: Tue, 27 Oct 2026 11:40:31 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"id":"EVT-NEW","artist":"Nova Pulse","space":"Main Stage","time":"21:00","status":"CANCELLED"}
+
+
