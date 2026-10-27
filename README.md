@@ -66,3 +66,67 @@ Keep-Alive: timeout=5
 {"id":"EVT-NEW","artist":"Nova Pulse","space":"Main Stage","time":"21:00","status":"CANCELLED"}
 
 
+# Bloque 04
+
+## Resultado
+- Qué añadí al proyecto: Handlers CRUD para los métodos sobre `/events` y `/events/{id}`, además del módulo compartido `model.ts` con tipos y catálogo fijo.
+- Ruta o pantalla comprobada: Endpoint `/events/EVT-101` mediante PUT, PATCH y GET posterior.
+- Estado y respuesta observados: PUT devolvió 400 Bad Request; PATCH devolvió 200 OK (`operation: UPDATED`); y el GET posterior devolvió 200 OK manteniendo el status `CONFIRMED`.
+
+## Comprensión
+- Recorrido del dato, explicado con mis palabras: La petición entra al handler según el método HTTP; PUT valida que llegue el objeto completo y falla al faltar campos, mientras que PATCH solo exige el campo a modificar y responde éxito sin alterar la memoria.
+- Cambio guiado y resultado: Envié solo `{"status": "CANCELLED"}` por PUT (obteniendo 400) y por PATCH (obteniendo 200). Al consultar de nuevo con GET sigue saliendo `CONFIRMED` porque el ejercicio no tiene base de datos persistente.
+- Error encontrado y cómo lo resolví: Al hacer PUT parcial el handler rechazó la petición por falta de campos obligatorios; lo resolví verificando que para sustitución completa se debe enviar la estructura entera del evento.
+
+## Evidencias
+- Captura o transcripción breve, sin credenciales:
+
+## Evidencias
+- Captura o transcripción breve, sin credenciales:
+  ```bash
+  # 1. PUT 
+$ curl -i -X PUT http://localhost:3000/dev/events/EVT-101 \
+  -H "Content-Type: application/json" \
+  -d '{"status":"CANCELLED"}'
+HTTP/1.1 400 Bad Request
+content-type: application/json; charset=utf-8
+vary: origin
+access-control-expose-headers: WWW-Authenticate,Server-Authorization
+cache-control: no-cache
+content-length: 69
+Date: Tue, 27 Oct 2026 18:14:42 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"message":"PUT requiere artist, space, time HH:mm y status válido"}
+
+  # 2. PATCH parcial -> 200
+  $ curl -i -X PATCH http://localhost:3000/dev/events/EVT-101 \
+  -H "Content-Type: application/json" \
+  -d '{"status":"CANCELLED"}'
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+vary: origin
+access-control-expose-headers: WWW-Authenticate,Server-Authorization
+cache-control: no-cache
+content-length: 71
+Date: Tue, 27 Oct 2026 18:14:10 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"id":"EVT-101","changes":{"status":"CANCELLED"},"operation":"UPDATED"}
+
+  # 3. GET comprobación
+$ curl -i -X GET http://localhost:3000/dev/events/EVT-101
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+vary: origin
+access-control-expose-headers: WWW-Authenticate,Server-Authorization
+cache-control: no-cache
+content-length: 95
+accept-ranges: bytes
+Date: Tue, 27 Oct 2026 18:15:18 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"id":"EVT-101","artist":"Neon Waves","space":"Main Stage","time":"22:30","status":"CONFIRMED"}
