@@ -37,3 +37,25 @@ Connection: keep-alive
 Keep-Alive: timeout=5
 
 {"id":"EVT-330","artist":"Neon Waves","space":"Main Stage","time":"22:30","status":"CONFIRMED"}
+
+
+## Bloque 03
+
+## Resultado
+- Qué añadí al proyecto: Creé el nuevo handler `backend/src/createEvent.ts` y di de alta el endpoint con método `POST` en `backend/serverless.yml`.
+- Ruta o pantalla comprobada: La ruta POST `/events` enviando un objeto JSON en el cuerpo de la petición.
+- Estado y respuesta observados: Estado 201 Created (o 200 OK) devolviendo el objeto del evento creado junto con su id asignado o confirmación.
+
+## Comprensión
+- Recorrido del dato, explicado con mis palabras: El cliente envía un JSON en el body de la petición HTTP; Serverless lo recibe como string en `event.body`, lo parseamos con `JSON.parse()` en TypeScript y procesamos los campos antes de responder.
+- Cambio guiado y resultado: Modifiqué las propiedades enviadas en el cuerpo (como el nombre o fecha del evento) y comprobé que la función las recibe y devuelve correctamente en la respuesta.
+- Error encontrado y cómo lo resolví: Si se envía la petición sin body o con JSON mal formateado, `JSON.parse` falla; se soluciona validando que `event.body` exista antes de parsear o envolviéndolo en un try/catch.
+
+## Evidencias
+- Captura o transcripción breve, sin credenciales:
+  ```bash
+  curl -i -X POST http://localhost:3000/events \
+    -H "Content-Type: application/json" \
+    -d '{"name": "Concierto Apertura", "location": "Escenario Principal"}'
+  HTTP/1.1 201 Created
+  {"message":"Evento creado con éxito","event":{"name":"Concierto Apertura","location":"Escenario Principal"}}
