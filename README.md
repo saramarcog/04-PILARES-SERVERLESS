@@ -130,3 +130,19 @@ Connection: keep-alive
 Keep-Alive: timeout=5
 
 {"id":"EVT-101","artist":"Neon Waves","space":"Main Stage","time":"22:30","status":"CONFIRMED"}
+
+
+# Bloque 05
+
+## Resultado
+- Qué añadí al proyecto: La aplicación frontend en la carpeta `mobile/` usando Expo y React Native con TypeScript (`App.tsx`).
+- Ruta o pantalla comprobada: La interfaz web de Expo abierta en el navegador local (`http://localhost:8081`).
+- Estado y respuesta observados: Se muestran las dos tarjetas de eventos y al pulsar el botón cambia dinámicamente el texto a `Selección: EVT-101` (y tras la prueba, a `EVT-102`).
+
+## Comprensión
+- Recorrido del dato, explicado con mis palabras: Los eventos se leen de un array local tipado en `App.tsx` y se pintan con `.map()`[cite: 12]; al hacer clic en el `Pressable`, se ejecuta el evento `onPress` llamando a `setSelected(...)`, lo que actualiza el estado con `useState` y fuerza un nuevo render en pantalla.
+- Cambio guiado y resultado: Cambié el valor de `setSelected` a `'EVT-102'` y la etiqueta del botón a "Seleccionar EVT-102"; al pulsar en pantalla se actualizó a `Selección: EVT-102`, y después restauré a `EVT-101` para mantener el hito base.
+- Error encontrado y cómo lo resolví: Al guardar el cambio en `App.tsx` había que verificar que el tipo del estado admitiera el id y restaurar el valor inicial para no romper el contrato del siguiente bloque.
+
+## Evidencias
+![alt text](image.png)
