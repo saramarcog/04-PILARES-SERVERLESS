@@ -146,3 +146,19 @@ Keep-Alive: timeout=5
 
 ## Evidencias
 ![alt text](image.png)
+
+
+# Bloque 06
+
+## Resultado
+- Qué añadí al proyecto: Creé el módulo cliente `api.ts` con la función `getEvents()` usando `fetch`, e integré la carga asíncrona con `useEffect` y manejo de estados (carga, error y eventos) en la interfaz.
+- Ruta o pantalla comprobada: La interfaz web de React Native en `http://localhost:8081` haciendo peticiones a `http://localhost:3000/dev/events`.
+- Estado y respuesta observados: Petición HTTP GET con estado 200 OK en Network y renderizado dinámico de las dos tarjetas recibidas desde la API.
+
+## Comprensión
+- Recorrido del dato, explicado con mis palabras: Al montar el componente, `useEffect` llama a `getEvents()`, que lanza un `fetch` hacia el endpoint del backend; al resolver la promesa, si `response.ok` es true se extrae el JSON y `setEvents` actualiza el estado para pintar las tarjetas.
+- Cambio guiado y resultado: Cambié la URL a `/ruta-inexistente` y comprobé en la pestaña Network que el servidor devuelve un 404 (hay comunicación HTTP); al restaurar `/events`, volvió a responder 200 OK y se mostraron las dos tarjetas.
+- Error encontrado y cómo lo resolví: `fetch` no rechaza la promesa ante un código 404 o 500; lo gestioné comprobando `if (!response.ok)` para lanzar un error explícito y activar la pantalla de recuperación en la interfaz
+
+## Evidencias
+![alt text](image-1.png)
