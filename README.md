@@ -227,3 +227,19 @@ X-Amz-Cf-Pop: MAD56-P6
 X-Amz-Cf-Id: khl6TYZGDq_fLyvaPT3Kesknv83P7ViVtMMwAE3YmERE9GDDH3zPvw==
 
 {"message":"Evento no encontrado"}
+
+
+
+# Bloque 09
+ 
+## Resultado
+- Qué añadí al proyecto: Configuración de la variable `API_URL` en el cliente `api.ts` con el endpoint real desplegado en AWS API Gateway, desconectando el entorno local.
+- Ruta o pantalla comprobada: Interfaz web de Expo/React Native en `http://localhost:8081` realizando peticiones a la ruta base remota `https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/events`.
+- Estado y respuesta observados: Peticiones HTTP completadas con éxito en los cinco métodos (GET 200, POST 201, PUT 200, PATCH 200, DELETE 200) mostrando los resultados en pantalla.
+ 
+## Comprensión
+- Recorrido del dato, explicado con mis palabras: Al accionar los controles de la aplicación, el navegador emite llamadas HTTPS hacia AWS API Gateway; este enruta cada método hacia su función Lambda respectiva en la nube, procesa la lógica y devuelve el JSON con los encabezados CORS correspondientes.
+- Cambio guiado y resultado: Con el backend local (`serverless offline`) detenido por completo, verifiqué que la aplicación web seguía operando contra AWS y que cada llamada generaba su registro correspondiente en CloudWatch Logs.
+ 
+## Evidencias
+![alt text](image-3.png)
