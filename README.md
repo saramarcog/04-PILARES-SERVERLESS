@@ -162,3 +162,68 @@ Keep-Alive: timeout=5
 
 ## Evidencias
 ![alt text](image-1.png)
+
+# Bloque 07
+
+## Resultado
+- Qué añadí al proyecto: Amplié `api.ts` con helpers para POST, PUT, PATCH y DELETE, y añadí en `App.tsx` los botones de acción con control de bloqueo asíncrono.
+- Ruta o pantalla comprobada: La interfaz `http://localhost:8081`, interactuando con los botones de mutación sobre la ruta `/dev/events/EVT-101`.
+- Estado y respuesta observados: Petición PATCH con estado 200 OK y respuesta JSON con `operation: "UPDATED"` y el objeto `changes` reflejando el status enviado.
+
+## Comprensión
+- Recorrido del dato, explicado con mis palabras: Al pulsar el botón, `onPress` dispara `run()`, que activa el estado `busy` para evitar pulsaciones dobles[cite: 18, 19]; el helper de `api.ts` lanza el `fetch` con método PATCH y el body con el status, el handler serverless responde 200[cite: 18] y la pantalla renderiza el JSON devuelto en la zona de resultado.
+- Cambio guiado y resultado: Cambié temporalmente en la llamada PATCH el valor `CANCELLED` por `CONFIRMED`; al pulsar el botón, en Network se envió ese body y el servidor respondió 200 OK con `changes.status: "CONFIRMED"`, restaurando luego `CANCELLED`.
+- Error encontrado y cómo lo resolví: Para evitar peticiones concurrentes o clics repetidos mientras la petición estaba en vuelo, se controló mediante la bandera `busy` que deshabilita los botones hasta que la promesa finaliza.
+
+## Evidencias
+![alt text](image-2.png)
+
+
+
+# Bloque 08
+
+## Resultado
+- Qué añadí al proyecto: Despliegue de la API en AWS mediante Serverless Framework, configurando el rol de Lambda, la región y el stage dev.
+- Ruta o pantalla comprobada: Los endpoints públicos en AWS API Gateway `/events/EVT-101` y `/events/NO-EXISTE`.
+- Estado y respuesta observados: `/events/EVT-101` devolvió 200 OK con los datos del concierto, y `/events/NO-EXISTE` devolvió 404 Not Found.
+
+## Comprensión
+- Recorrido del dato, explicado con mis palabras: La petición viaja por HTTPS hasta API Gateway en AWS, que ejecuta la función Lambda `getEvent` en la nube; esta busca el ID en el catálogo y devuelve el JSON, dejando el registro de ejecución en CloudWatch.
+- Cambio guiado y resultado: Probé a solicitar un evento existente (`EVT-101`) y uno inexistente (`NO-EXISTE`), viendo los códigos 200 y 404 y comprobando que ambos IDs quedaron registrados en los logs remotos con `serverless logs`.
+- Error encontrado y cómo lo resolví: El comando de comprobación de identidad fallaba inicialmente por tener el perfil configurado como `[default]` en lugar de `[academy]`; lo resolví alineando el perfil en la terminal y exportando las variables del lab.
+
+## Evidencias
+$ curl -i "$API_BASE/events/EVT-101"
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 95
+Connection: keep-alive
+Date: Wed, 28 Oct 2026 18:17:04 GMT
+X-Amzn-Trace-Id: Root=1-6ae23c20-4196e5803d1682f1494b69f3;Parent=43240542cb7bb375;Sampled=0;Lineage=1:3f01eee9:0
+x-amzn-RequestId: fbb4b33c-5590-46d4-862e-8e259058c9c9
+Access-Control-Allow-Origin: *
+x-amz-apigw-id: F95VJFpCoAMEOcg=
+X-Cache: Miss from cloudfront
+Via: 1.1 f865715d4896b1ae13029061b22a8846.cloudfront.net (CloudFront)
+X-Amz-Cf-Pop: MAD56-P6
+X-Amz-Cf-Id: i09DivZUnaD5X7gwTNDYqz54AWr304wwme-lxL3hrqRJOOzOeSS9MQ==
+
+{"id":"EVT-101","artist":"Neon Waves","space":"Main Stage","time":"22:30","status":"CONFIRMED"}
+
+
+$ curl -i "$API_BASE/events/NO-EXISTE"
+HTTP/1.1 404 Not Found
+Content-Type: application/json
+Content-Length: 34
+Connection: keep-alive
+Date: Wed, 28 Oct 2026 18:19:00 GMT
+X-Amzn-Trace-Id: Root=1-6ae23c94-2f8716117983cc0912034201;Parent=0b72aaeb5c7fe671;Sampled=0;Lineage=1:3f01eee9:0
+x-amzn-RequestId: 75fc563e-7e7d-4d99-aab3-c88a93b7e09a
+Access-Control-Allow-Origin: *
+x-amz-apigw-id: F95nPGhFoAMEDwg=
+X-Cache: Error from cloudfront
+Via: 1.1 360f2155136cb19e80a644918f38d492.cloudfront.net (CloudFront)
+X-Amz-Cf-Pop: MAD56-P6
+X-Amz-Cf-Id: khl6TYZGDq_fLyvaPT3Kesknv83P7ViVtMMwAE3YmERE9GDDH3zPvw==
+
+{"message":"Evento no encontrado"}
