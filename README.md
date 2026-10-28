@@ -243,3 +243,86 @@ X-Amz-Cf-Id: khl6TYZGDq_fLyvaPT3Kesknv83P7ViVtMMwAE3YmERE9GDDH3zPvw==
  
 ## Evidencias
 ![alt text](image-3.png)
+
+
+
+# Bloque 10 - Venue Control (Entrenamiento Evaluable)
+
+## Resultado
+- Qué añadí al proyecto: Implementación completa y autónoma de la nueva entidad Venue Control (`/zones`), desarrollando los handlers TypeScript en `backend/src/zones/`, actualizando `serverless.yml`, y programando la interfaz React Native con cuatro vistas (Listado, Detalle, Nuevo y Editar).
+- Ruta o pantalla comprobada: La interfaz web de Venue Control en React Native y los endpoints de AWS API Gateway `/zones` y `/zones/{id}`.
+- Estado y respuesta observados: Operaciones completas verificadas (GET , POST, PUT , PATCH  y DELETE) tanto en local con `serverless-offline` como en AWS Cloud con invocaciones directas.
+
+## Comprensión
+- Recorrido del dato, explicado con mis palabras: Al accionar un botón en la app de React Native, se emite una llamada HTTPS a AWS API Gateway. El servicio extrae parámetros de ruta (`{id}` hacia `event.pathParameters`) o cuerpo JSON (`event.body`) e invoca la función Lambda correspondiente. La función procesa la solicitud y devuelve la respuesta JSON con cabeceras CORS para que el navegador la renderice, dejando traza en CloudWatch Logs.
+- Cambio guiado y resultado: Se transfirió la arquitectura de Festival Control a Venue Control, verificando primero la funcionalidad de forma desacoplada con `curl` y Thunder Client antes de integrarla con la interfaz móvil, finalizando con el despliegue en AWS y la lectura de registros remotos.
+
+## Evidencias
+![alt text](image-4.png)
+
+$ npx serverless logs -f updateZone --stage dev --region "$AWS_REGION"
+
+⠋ Fetching logs(node:11588) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Logs Start Time: 2026-10-28 19:57:10
+
+INIT_START Runtime - Version: nodejs:22.mainline.v157   Runtime Version ARN: arn:aws:lambda:us-east-1::runtime:cbcc11b383076fe697bc3db3b70762ca2e957a0fa52f97eb7f3a4a0ae9895c20
+START - b646b1eb-898d-467a-8a4d-b8821252c9dc - Version: $LATEST
+END - b646b1eb-898d-467a-8a4d-b8821252c9dc
+REPORT - b646b1eb-898d-467a-8a4d-b8821252c9dc
+Duration: 3.47 ms       Billed Duration: 166 ms Memory Size: 1024 MB    Max Memory Used: 70 MB  Init Duration: 162.38 ms
+
+
+$ curl -i -X PATCH https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/zones/ZONE-01   -H "Content-Type: application/json"   -d '{"status":"FULL"}'
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 66
+Connection: keep-alive
+Date: Wed, 28 Oct 2026 19:06:53 GMT
+Access-Control-Allow-Credentials: true
+x-amzn-RequestId: cfc7021f-3a84-4814-b601-53379b8449b9
+Access-Control-Allow-Origin: *
+x-amz-apigw-id: F-AoLHLlIAMEsAQ=
+X-Amzn-Trace-Id: Root=1-6ae247cd-4ba069fa7d451299622f5bd1;Parent=731493a55c84c9ba;Sampled=0;Lineage=1:0e1433fd:0
+X-Cache: Miss from cloudfront
+Via: 1.1 584fbfcd613b616ec05f04d538c82144.cloudfront.net (CloudFront)
+X-Amz-Cf-Pop: MAD56-P6
+X-Amz-Cf-Id: uo-bOo7LLZACKSXE9kxF4Cvy708IPOx7pF-S1KpIVRcPisxremTrtw==
+
+$ npx serverless deploy --stage dev --region "$AWS_REGION"
+
+Deploying "festival-control-api-user4549461" to stage "dev" (us-east-1)
+
+⠋ Packaging(node:19608) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Service deployed to stack festival-control-api-user4549461-dev (59s)
+
+endpoints:
+  GET - https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/hello
+  GET - https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/events/{id}
+  POST - https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/events
+  GET - https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/events
+  PUT - https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/events/{id}
+  PATCH - https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/events/{id}
+  DELETE - https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/events/{id}
+  GET - https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/zones
+  GET - https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/zones/{id}
+  POST - https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/zones
+  PUT - https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/zones/{id}
+  PATCH - https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/zones/{id}
+  DELETE - https://iac001c0t2.execute-api.us-east-1.amazonaws.com/dev/zones/{id}
+functions:
+  hello: festival-control-api-user4549461-dev-hello (76 kB)
+  getEvent: festival-control-api-user4549461-dev-getEvent (76 kB)
+  createEvent: festival-control-api-user4549461-dev-createEvent (76 kB)
+  listEvents: festival-control-api-user4549461-dev-listEvents (76 kB)
+  replaceEvent: festival-control-api-user4549461-dev-replaceEvent (76 kB)
+  updateEvent: festival-control-api-user4549461-dev-updateEvent (76 kB)
+  deleteEvent: festival-control-api-user4549461-dev-deleteEvent (76 kB)
+  listZones: festival-control-api-user4549461-dev-listZones (76 kB)
+  getZone: festival-control-api-user4549461-dev-getZone (76 kB)
+  createZone: festival-control-api-user4549461-dev-createZone (76 kB)
+  replaceZone: festival-control-api-user4549461-dev-replaceZone (76 kB)
+  updateZone: festival-control-api-user4549461-dev-updateZone (76 kB)
+  deleteZone: festival-control-api-user4549461-dev-deleteZone (76 kB)
+
